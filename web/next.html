@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="next.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery.min.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <title>todo-list</title>
+</head>
+
+<body>
+    <img src="{{ img_url }}" alt="Captured image"> 
+    <p>Capture time: {{ capture_time }}</p> 
+
+    <div id="container">
+        <div id="background">
+            <div id="rectangle1"></div>
+            <div id="emoji">🚨</div>
+        </div>
+        <div id="group2">
+            <button id="button" onclick="goToNextPage()">Return</button>
+        </div>
+    </div>
+    
+    <table class="table">
+        <input id="btn" class="btn btn-primary" value="todos">
+        <table>
+            <thead>
+                <td>order</td>
+                <td>time</td>
+                <td>image</td>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <script src="static/index.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</body>
+<script>
+    let btn = document.querySelector('#btn');
+
+    btn.addEventListener('click', () => {
+        $.ajax({
+            type: 'GET',
+            url: 'https://jsonplaceholder.typicode.com/todos',
+            dataType: 'json'
+        }).done(result => {
+            console.log(result)
+            let table = "";
+            for (let i in result) {
+                table += "<tr>"
+                table += "<td>" + result[i].userId + "</td>"
+                table += "<td>" + result[i].title + "</td>"
+                table += "<td>" + result[i].completed + "</td>"
+                table += "</tr>"
+            }
+            document.querySelector('tbody').innerHTML = table; // += 대신 = 사용
+        })
+    })
+    
+
+    function goToNextPage() {
+        window.location.href = "main.html"; // 새로운 페이지로 이동
+    }
+
+</script>
+
+</html>
