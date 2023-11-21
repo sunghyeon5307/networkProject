@@ -3,14 +3,16 @@ import mysql.connector
 import cv2
 import time
 from gpiozero import MotionSensor
+import base64
+
+db = mysql.connector.connect(
+    host="localhost",
+    user="ubuntu",
+    password="1234567890",
+    database="shopping_db"
+)
 
 def fetch_from_db():
-    db = mysql.connector.connect(
-        host="localhost",
-        user="ubuntu",
-        password="1234567890",
-        database="shopping_db"
-    )
     cursor = db.cursor()
     sql = "SELECT * FROM yourtable ORDER BY time DESC LIMIT 1"
     cursor.execute(sql)
@@ -33,21 +35,27 @@ def move():
 def display():
     # 이미지, 시간 정보 db에서 검색
     img_data, capture_time = fetch_from_db()
-    img_url = url_for('static', filename='capture.jpg')
-    return render_template('display.html', img_data=img_data, capture_time=capture_time)
+    # img_url = url_for('static', filename='capture.jpg')
+    encoded_img_data = base64.b64encode(img_data).decode('utf-8')
+    return render_template('display.html', img_data=encoded_img_data, capture_time=capture_time)
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# @app.route('/next')
+# def next_page():
+#     return render_template('next.html')
+
+# @app.route('/main')   
+# def main_page():
+#     return render_template('main.html')
+
+@app.route('/get_data', methods=['GET'])
+def get_data():
+    img_data, capture_time = fetch_from_db()
+    encoded_img_data = base64.b64encode(img_data).decode('utf-8')
+    return {"img_data": encoded_img_data, "capture_time": capture_time}
 
 def detect_and_save():
-    pin = MotionSensor(7) # 센서의 GPIO 번호
+    pin = MotionSensor(22) # 센서의 GPIO 번호
 
-    db = mysql.connector.connect(
-        host="localhost",
-        user="ubuntu",
-        password="1234567890",
-        database="shopping_db"
-    )
     while True:
         if pin.motion_detected:
             print("!!!!!!!")
@@ -65,7 +73,12 @@ def detect_and_save():
                     binary_data = f.read()
                 current_time = time.strftime('%Y-%m-%d %H:%M:%S')
                 cursor = db.cursor()
-                sql = "INSERT INTO yourtable (current_time, image) VALUES (%s, %s)"
+                sql = "INSERT INTO images_table (current_time, image) VALUES (%s, %s)"
                 val = (current_time, binary_data)
                 cursor.execute(sql, val)
                 db.commit()
+
+if __name__ == "__main__":
+    detect_and_save()   
+    app.run(debug=True)
+
