@@ -53,6 +53,11 @@ def get_data():
     encoded_img_data = base64.b64encode(img_data).decode('utf-8')
     return {"img_data": encoded_img_data, "capture_time": capture_time}
 
+@app.route('/main')
+def main_page():
+    return render_template('main.html')
+
+
 def detect_and_save():
     pin = MotionSensor(22) # 센서의 GPIO 번호
 

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body {
+                margin: 0;
+                position: fixed;
+            }
+
+            #container {
+                position: relative;
+                width: 100vw;
+                height: 100vh;
+                background: #FFFFFF;
+            }
+
+            #rectangle1 {
+                position: absolute;
+                width: 100%;
+                height: 16%;
+                background: rgba(255, 0, 0, 0.733333);
+            }
+
+            #emoji {
+                position: absolute;
+                width: 10%;
+                height: 10%;
+                left: 2%;
+                top: 7%;
+                font-family: 'Pretendard';
+                font-style: normal;
+                font-weight: 900;
+                font-size: 5em;
+                line-height: 10%;
+                color: #FFFFFF;
+            }
+
+            #group2 {
+                position: absolute;
+                width: 22%;
+                height: 20%;
+                left: 39%;
+                top: 50%;
+            }
+
+            #button {
+                position: absolute;
+                width: 80%;
+                height: 80%;
+                background: #FF0000;
+                border-radius: 10px;
+                font-size: 4em;
+                /* 아래의 두 속성을 추가하여 가운데 정렬 */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-family: 'Pretendard';
+                font-style: normal;
+                font-weight: 900;
+                color: #FFFFFF;
+                border-radius: 4.6875em;
+            }
+
+            #intruderText {
+                position: absolute;
+                width: 100%;
+                height: 10%;
+                left: 5%;
+                top: -15%;
+                font-family: 'Pretendard';
+                font-style: normal;
+                font-weight: 900;
+                font-size: 1.5em;
+                line-height: 100%;
+                color: #000000;
+            }
+        </style>
+    </head>
+<body>
+    <div id="container">
+        <div id="background">
+            <div id="rectangle1"></div>
+            <div id="emoji">🚨</div>
+        </div>
+        <div id="group2">
+            <div id="button" onclick="go()">Find</div>
+            <div id="intruderText">I’ll find your intruder!</div>
+        </div>
+    </div>
+
+    <script>
+        function go() {
+            window.location.href = "next.html";
+        }
+    </script>
+</body>
+</html>
