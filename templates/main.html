@@ -74,16 +74,12 @@
 
 </head>
 <body>
-    <!-- <img src="data:image/jpeg;base64,{{ img_data }}"> -->
-    <!-- <p>Capture time: {{ capture_time }}</p>  -->
-
     <div id="container">
         <div id="background">
             <div id="rectangle1"></div>
             <div id="emoji">🚨</div>
         </div>
     </div>
-    
 
     <input id="btn" class="btn btn-primary" value="todos">
     <table>
@@ -92,32 +88,41 @@
             <td>time</td>
             <td>image</td>
         </thead>
-        <tbody></tbody>
+        <tbody id="todo-list"></tbody>
     </table>
+
+    <script>
+        let btn = document.querySelector('#btn');
+
+        btn.addEventListener('click', () => {
+            $.ajax({
+                type: 'GET',
+                url: '/get_data',  // Flask 서버의 '/get_data' 라우트에 요청을 보냅니다.
+                dataType: 'json'
+            }).done(result => {
+                // 이미지와 시간 값을 HTML 테이블에 추가하는 코드
+                let tbody = document.querySelector('#todo-list');
+
+                let row = document.createElement('tr');
+
+                let orderCell = document.createElement('td');
+                orderCell.textContent = "1";  // 순서값을 지정하거나 DB에서 받아온 값으로 대체해야 합니다.
+                row.appendChild(orderCell);
+
+                let timeCell = document.createElement('td');
+                timeCell.textContent = result.capture_time;  // DB에서 받아온 시간 값을 표시합니다.
+                row.appendChild(timeCell);
+
+                let imageCell = document.createElement('td');
+                let img = document.createElement('img');
+                img.src = "data:image/jpeg;base64," + result.img_data;  // DB에서 받아온 이미지 값을 표시합니다.
+                imageCell.appendChild(img);
+                row.appendChild(imageCell);
+
+                tbody.appendChild(row);
+            });
+        });
+    </script>
 </body>
-
-<script>
-    let btn = document.querySelector('#btn');
-
-btn.addEventListener('click', () => {
-    $.ajax({
-        type: 'GET',
-        url: '/get_data',  // Flask 서버의 '/get_data' 라우트에 요청을 보냅니다.
-        dataType: 'json'
-    }).done(result => {
-// 이미지와 시간 값을 HTML 요소로 추가하는 코드
-        let img = document.createElement('img');
-        img.src = "data:image/jpeg;base64," + result.img_data;
-        document.body.appendChild(img);
-
-        let p = document.createElement('p');
-        p.textContent = "Capture time: " + result.capture_time;
-        document.body.appendChild(p);
-    })
-
-})
-
-</script>
-
 
 </html>
