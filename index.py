@@ -93,7 +93,7 @@ def detect_and_save():
 
         return ret, frame
     
-    pin = MotionSensor(22)  # 센서의 GPIO 번호
+    pin = MotionSensor(7)  # 센서의 GPIO 번호
 
     if pin.motion_detected:
         print("!!!!!!!")
