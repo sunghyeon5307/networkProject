@@ -1,5 +1,6 @@
 from flask import Flask, render_template, redirect, url_for
 import mysql.connector
+from flask import Flask
 import cv2
 import time
 from gpiozero import MotionSensor
