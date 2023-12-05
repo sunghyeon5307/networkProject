@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -122,6 +122,165 @@
                 tbody.appendChild(row);
             });
         });
+    </script>
+</body>
+
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="next.css">
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <title>todo-list</title>
+    <style>
+        body {
+            margin: 0;
+            position: fixed;
+        }
+
+        #emoji {
+            position: absolute;
+            width: 10%;
+            height: 10%;
+            left: 2%;
+            top: 7%;
+            font-family: 'Pretendard';
+            font-style: normal;
+            font-weight: 900;
+            font-size: 5em;
+            line-height: 10%;
+            color: #FFFFFF;
+        }
+
+        #container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: #FFFFFF;
+        }
+
+        #rectangle1 {
+            position: absolute;
+            width: 100%;
+            height: 16%;
+            background: rgba(255, 0, 0, 0.733333);
+        }
+        #group2 {
+            position: absolute;
+            width: 22%;
+            height: 20%;
+            left: 39%;
+            top: 40%;
+        }
+
+        #button {
+            position: absolute;
+            width: 30%;
+            height: 30%;
+            background: #FF0000;
+            border-radius: 10px;
+            font-size: 1.5em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Pretendard';
+            font-style: normal;
+            font-weight: 900;
+            color: #FFFFFF;
+            right: -160%;
+            bottom: -180%;
+            border-radius: 4.6875em;
+        }
+        #btn {
+            position: absolute;
+            bottom: 80%;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="container">
+        <div id="background">
+            <div id="rectangle1"></div>
+            <div id="emoji">🚨</div>
+        </div>
+    </div>
+
+    <input id="btn" class="btn btn-primary" value="todos">
+    <table>
+        <thead>
+            <td>order</td>
+            <td>time</td>
+            <td>image</td>
+        </thead>
+        <tbody id="todo-list"></tbody>
+    </table>
+
+    <script>
+        let btn = document.querySelector('#btn');
+
+        btn.addEventListener('click', () => {
+            $.ajax({
+                type: 'GET',
+                url: '/get_data',
+                dataType: 'json'
+            }).done(result => {
+                let tbody = document.querySelector('#todo-list');
+
+                let row = document.createElement('tr');
+
+                let orderCell = document.createElement('td');
+                orderCell.textContent = "1";
+                row.appendChild(orderCell);
+
+                let timeCell = document.createElement('td');
+                timeCell.textContent = result.capture_time;
+                row.appendChild(timeCell);
+
+                let imageCell = document.createElement('td');
+                let img = document.createElement('img');
+                img.src = "data:image/jpeg;base64," + result.img_data;
+                imageCell.appendChild(img);
+                row.appendChild(imageCell);
+
+                // OpenCV 코드 작성
+                // 이미지를 그레이스케일로 변환하여 표시하는 작업을 수행합니다.
+                let canvas = document.createElement('canvas');
+                let ctx = canvas.getContext('2d');
+                let imgObj = new Image();
+                imgObj.src = "data:image/jpeg;base64," + result.img_data;
+                imgObj.onload = function() {
+                    canvas.width = imgObj.width;
+                    canvas.height = imgObj.height;
+                    ctx.drawImage(imgObj, 0, 0);
+                    let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    let grayImageData = convertToGrayScale(imageData);
+                    ctx.putImageData(grayImageData, 0, 0);
+                    let grayImg = document.createElement('img');
+                    grayImg.src = canvas.toDataURL("image/jpeg");
+                    imageCell.appendChild(grayImg);
+                }
+
+                tbody.appendChild(row);
+            });
+        });
+
+        // OpenCV를 사용하여 이미지를 그레이스케일로 변환하는 함수
+        function convertToGrayScale(imageData) {
+            let data = imageData.data;
+            for (let i = 0; i < data.length; i += 4) {
+                let avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                data[i] = avg;
+                data[i + 1] = avg;
+                data[i + 2] = avg;
+            }
+            return imageData;
+        }
     </script>
 </body>
 
