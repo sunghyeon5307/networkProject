@@ -10,6 +10,11 @@ from capture_utils import detect_and_save
 app = Flask(__name__)
 
 @app.route('/')
+def hello():
+    return 'Hello, World!'
+
+
+@app.route('/')
 def home():
     return render_template('home.html')
 
@@ -38,5 +43,5 @@ def web_detect_and_save():
     detect_and_save()
     return redirect(url_for('home'))
 
-if __name__ == "__main__":
-    app.run(debug=True)
+if __name__ == '__main__':
+    app.run()
