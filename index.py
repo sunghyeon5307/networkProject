@@ -27,7 +27,7 @@ def index():
 
 @app.route('/move', methods=['POST'])
 def move():
-    return redirect(url_for('display'))
+    return redirect(url_for('main'))
 
 @app.route('/display')
 def display():
@@ -35,7 +35,7 @@ def display():
     img_data, capture_time = fetch_from_db()
     # img_url = url_for('static', filename='capture.jpg')
     encoded_img_data = base64.b64encode(img_data).decode('utf-8')
-    return render_template('display.html', img_data=encoded_img_data, capture_time=capture_time)
+    return render_template('main.html', img_data=encoded_img_data, capture_time=capture_time)
 
 @app.route('/get_data', methods=['GET'])
 def get_data():
