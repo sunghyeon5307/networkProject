@@ -11,8 +11,8 @@ app = Flask(__name__)
 
 
 @app.route('/')
-def home():
-    return render_template('home.html')
+def index():
+    return render_template('main.html')
 
 @app.route('/move', methods=['POST'])
 def move():
