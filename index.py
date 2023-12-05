@@ -4,11 +4,22 @@ import cv2
 import time
 from gpiozero import MotionSensor
 import base64
-from db_utils import fetch_from_db
-from capture_utils import detect_and_save
+
+db = mysql.connector.connect(
+    host="localhost",
+    user="pjh",
+    password="1234",
+    database="shopping_db"
+)
+
+def fetch_from_db():
+    cursor = db.cursor()
+    sql = "SELECT * FROM images_table ORDER BY time DESC LIMIT 1"
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    return result[1], result[0]   # 1: 이미지 데이터, 0: 시간
 
 app = Flask(__name__)
-
 
 @app.route('/')
 def index():
@@ -20,7 +31,9 @@ def move():
 
 @app.route('/display')
 def display():
+    # 이미지, 시간 정보 db에서 검색
     img_data, capture_time = fetch_from_db()
+    # img_url = url_for('static', filename='capture.jpg')
     encoded_img_data = base64.b64encode(img_data).decode('utf-8')
     return render_template('display.html', img_data=encoded_img_data, capture_time=capture_time)
 
@@ -39,5 +52,30 @@ def web_detect_and_save():
     detect_and_save()
     return redirect(url_for('home'))
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0' )
+def detect_and_save():
+    pin = MotionSensor(22) # 센서의 GPIO 번호
+
+    if pin.motion_detected:
+        print("!!!!!!!")
+        cap = cv2.VideoCapture(0)
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 440)
+
+        ret, frame = cap.read() # 캡쳐
+        cap.release()
+        cv2.destroyAllWindows()
+
+        if ret:
+            cv2.imwrite('capture.jpg', frame)
+            with open('capture.jpg', 'rb') as f:
+                binary_data = f.read()
+            current_time = time.strftime('%Y-%m-%d %H:%M:%S')
+            cursor = db.cursor()
+            sql = "INSERT INTO images_table (current_time, image) VALUES (%s, %s)"
+            val = (current_time, binary_data)
+            cursor.execute(sql, val)
+            db.commit()
+
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')
