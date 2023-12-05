@@ -1,6 +1,5 @@
 from flask import Flask, render_template, redirect, url_for
 import mysql.connector
-from flask import Flask
 import cv2
 import time
 from gpiozero import MotionSensor
@@ -9,10 +8,6 @@ from db_utils import fetch_from_db
 from capture_utils import detect_and_save
 
 app = Flask(__name__)
-
-@app.route('/')
-def hello():
-    return 'Hello, World!'
 
 
 @app.route('/')
@@ -45,4 +40,4 @@ def web_detect_and_save():
     return redirect(url_for('home'))
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0' )
