@@ -1,97 +1,126 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <style>
-            body {
-                margin: 0;
-                position: fixed;
-            }
+<html lang="en">
 
-            #container {
-                position: relative;
-                width: 100vw;
-                height: 100vh;
-                background: #FFFFFF;
-            }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="next.css">
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <title>todo-list</title>
+    <style>
+        body {
+            margin: 0;
+            position: fixed;
+        }
 
-            #rectangle1 {
-                position: absolute;
-                width: 100%;
-                height: 16%;
-                background: rgba(255, 0, 0, 0.733333);
-            }
+        #emoji {
+            position: absolute;
+            width: 10%;
+            height: 10%;
+            left: 2%;
+            top: 7%;
+            font-family: 'Pretendard';
+            font-style: normal;
+            font-weight: 900;
+            font-size: 5em;
+            line-height: 10%;
+            color: #FFFFFF;
+        }
 
-            #emoji {
-                position: absolute;
-                width: 10%;
-                height: 10%;
-                left: 2%;
-                top: 7%;
-                font-family: 'Pretendard';
-                font-style: normal;
-                font-weight: 900;
-                font-size: 5em;
-                line-height: 10%;
-                color: #FFFFFF;
-            }
+        #container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: #FFFFFF;
+        }
 
-            #group2 {
-                position: absolute;
-                width: 22%;
-                height: 20%;
-                left: 39%;
-                top: 50%;
-            }
+        #rectangle1 {
+            position: absolute;
+            width: 100%;
+            height: 16%;
+            background: rgba(255, 0, 0, 0.733333);
+        }
+        #group2 {
+            position: absolute;
+            width: 22%;
+            height: 20%;
+            left: 39%;
+            top: 40%;
+        }
 
-            #button {
-                position: absolute;
-                width: 80%;
-                height: 80%;
-                background: #FF0000;
-                border-radius: 10px;
-                font-size: 4em;
-                /* 아래의 두 속성을 추가하여 가운데 정렬 */
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-family: 'Pretendard';
-                font-style: normal;
-                font-weight: 900;
-                color: #FFFFFF;
-                border-radius: 4.6875em;
-            }
+        #button {
+            position: absolute;
+            width: 30%;
+            height: 30%;
+            background: #FF0000;
+            border-radius: 10px;
+            font-size: 1.5em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Pretendard';
+            font-style: normal;
+            font-weight: 900;
+            color: #FFFFFF;
+            right: -160%;
+            bottom: -180%;
+            border-radius: 4.6875em;
+        }
+        #btn {
+            position: absolute;
+            bottom: 80%;
+        }
+    </style>
 
-            #intruderText {
-                position: absolute;
-                width: 100%;
-                height: 10%;
-                left: 5%;
-                top: -15%;
-                font-family: 'Pretendard';
-                font-style: normal;
-                font-weight: 900;
-                font-size: 1.5em;
-                line-height: 100%;
-                color: #000000;
-            }
-        </style>
-    </head>
+</head>
 <body>
+    <!-- <img src="data:image/jpeg;base64,{{ img_data }}"> -->
+    <!-- <p>Capture time: {{ capture_time }}</p>  -->
+
     <div id="container">
         <div id="background">
             <div id="rectangle1"></div>
             <div id="emoji">🚨</div>
         </div>
         <div id="group2">
-            <div id="button" onclick="go()">Find</div>
-            <div id="intruderText">I’ll find your intruder!</div>
+            <button id="button" onclick="goToNextPage()">Return</button>
         </div>
     </div>
+    
 
-    <script>
-        function go() {
-            window.location.href = "next.html";
-        }
-    </script>
+    <input id="btn" class="btn btn-primary" value="todos">
+    <table>
+        <thead>
+            <td>order</td>
+            <td>time</td>
+            <td>image</td>
+        </thead>
+        <tbody></tbody>
+    </table>
 </body>
+
+<script>
+    let btn = document.querySelector('#btn');
+
+btn.addEventListener('click', () => {
+    $.ajax({
+        type: 'GET',
+        url: '/get_data',  // Flask 서버의 '/get_data' 라우트에 요청을 보냅니다.
+        dataType: 'json'
+    }).done(result => {
+// 이미지와 시간 값을 HTML 요소로 추가하는 코드
+        let img = document.createElement('img');
+        img.src = "data:image/jpeg;base64," + result.img_data;
+        document.body.appendChild(img);
+
+        let p = document.createElement('p');
+        p.textContent = "Capture time: " + result.capture_time;
+        document.body.appendChild(p);
+    })
+
+})
+
+</script>
+
+
 </html>
