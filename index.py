@@ -50,20 +50,27 @@ def main_page():
 @app.route('/detect_and_save')
 def web_detect_and_save():
     detect_and_save()
-    return redirect(url_for('home'))
+    return redirect(url_for('main'))
+
 
 def detect_and_save():
-    pin = MotionSensor(22) # 센서의 GPIO 번호
 
-    if pin.motion_detected:
-        print("!!!!!!!")
+    def capture_frame():
         cap = cv2.VideoCapture(0)
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 440)
 
-        ret, frame = cap.read() # 캡쳐
+        ret, frame = cap.read()  # 캡처
         cap.release()
         cv2.destroyAllWindows()
+
+        return ret, frame
+    
+    pin = MotionSensor(22)  # 센서의 GPIO 번호
+
+    if pin.motion_detected:
+        print("!!!!!!!")
+        ret, frame = capture_frame()
 
         if ret:
             cv2.imwrite('capture.jpg', frame)
