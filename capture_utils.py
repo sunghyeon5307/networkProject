@@ -1,13 +1,18 @@
+import cv2
+import time
+from gpiozero import MotionSensor
+import base64
+from db_utils import db
+
 def detect_and_save():
-    pin = MotionSensor(22) # 센서의 GPIO 번호
+    pin = MotionSensor(22)
 
     if pin.motion_detected:
-        print("!!!!!!!")
         cap = cv2.VideoCapture(0)
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 440)
 
-        ret, frame = cap.read() # 캡쳐
+        ret, frame = cap.read()
         cap.release()
         cv2.destroyAllWindows()
 

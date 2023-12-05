@@ -1,5 +1,11 @@
-from db_connect import connect_db
-from fetch_data import fetch_from_db
+from flask import Flask, render_template, redirect, url_for
+import mysql.connector
+import cv2
+import time
+from gpiozero import MotionSensor
+import base64
+from db_utils import fetch_from_db
+from capture_utils import detect_and_save
 
 app = Flask(__name__)
 
@@ -13,9 +19,7 @@ def move():
 
 @app.route('/display')
 def display():
-    # 이미지, 시간 정보 db에서 검색
     img_data, capture_time = fetch_from_db()
-    # img_url = url_for('static', filename='capture.jpg')
     encoded_img_data = base64.b64encode(img_data).decode('utf-8')
     return render_template('display.html', img_data=encoded_img_data, capture_time=capture_time)
 
@@ -33,3 +37,6 @@ def main_page():
 def web_detect_and_save():
     detect_and_save()
     return redirect(url_for('home'))
+
+if __name__ == "__main__":
+    app.run(debug=True)
