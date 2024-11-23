@@ -126,7 +126,7 @@
                 row.appendChild(imageCell);
 
                 // OpenCV 코드 작성
-                // 이미지를 그레이스케일로 변환하여 표시하는 작업을 수행합니다.
+                // 이미지를 그레이스케일로 변환하여 표시
                 let canvas = document.createElement('canvas');
                 let ctx = canvas.getContext('2d');
                 let imgObj = new Image();
@@ -147,7 +147,7 @@
             });
         });
 
-        // OpenCV를 사용하여 이미지를 그레이스케일로 변환하는 함수
+        // OpenCV를 사용하여 이미지를 그레이스케일로 변환
         function convertToGrayScale(imageData) {
             let data = imageData.data;
             for (let i = 0; i < data.length; i += 4) {
